@@ -1,0 +1,3 @@
+# Test method names use underscores (Method_scenario_result); other style rules still apply.
+[*.cs]
+dotnet_diagnostic.IDE1006.severity = suggestion

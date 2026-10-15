@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Processor status</title>
+<style>
+  :root {
+    --mint: #00e38c; --mint-dark: #005b38; --mint-light: #ccf9e8; --blue: #1e2ed9; --slate: #575a76;
+    --ink: #111111; --bar: #191a1e; --page: #f6f7fa; --panel: #e9f0f8; --border: #dee2e6;
+    --red: #ea0029; --amber: #ffc107; --card: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 14px/1.4 "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif; }
+  header { background: var(--bar); color: #fff; display: flex; align-items: center; gap: 16px; padding: 12px 24px; border-bottom: 3px solid var(--mint); }
+  header svg.logo { height: 38px; width: auto; fill: #fff; flex: none; }
+  header h1 { font-size: 18px; margin: 0; font-weight: 600; }
+  header .sub { color: #b8bacb; font-size: 12px; }
+  header .chips { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { border-radius: 999px; padding: 3px 12px; font-size: 12px; font-weight: 700; background: #3a3c46; color: #fff; }
+  .chip.ok { background: var(--mint); color: var(--mint-dark); }
+  .chip.bad { background: var(--red); color: #fff; }
+  .chip.warn { background: var(--amber); color: #3b2f00; }
+  #banner { display: none; background: var(--red); color: #fff; padding: 8px 24px; font-weight: 600; }
+  main { padding: 20px 24px 32px; max-width: 1240px; margin: 0 auto; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+  .card .label { color: var(--slate); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  .card .value { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .card .unit { font-size: 13px; color: var(--slate); font-weight: 400; margin-left: 4px; }
+  .card.good .value { color: var(--mint-dark); }
+  .card.warn .value { color: #8a6500; }
+  .card.bad .value { color: var(--red); }
+  .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 12px; }
+  .chart h2 { margin: 0 0 2px; font-size: 14px; color: var(--blue); }
+  .chart .note { color: var(--slate); font-size: 12px; margin: 0 0 6px; min-height: 2.6em; }
+  .chart svg { width: 100%; height: 150px; display: block; background: #fbfcfe; border: 1px solid var(--border); border-radius: 8px; }
+  .chart .axis { fill: var(--slate); font-size: 10px; }
+  .chart .grid { stroke: #e3e7ee; stroke-width: 1; }
+  .chart .thr { stroke: var(--red); stroke-width: 1; stroke-dasharray: 4 3; }
+  .chart .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .chart .area { opacity: .12; }
+  .row { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-top: 12px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+  th { color: var(--slate); font-weight: 600; font-size: 12px; }
+  td.n { text-align: right; }
+  tr.hot td { color: var(--red); font-weight: 700; }
+  .mono { font-family: Consolas, "Cascadia Mono", monospace; }
+  footer { color: var(--slate); font-size: 12px; margin-top: 16px; }
+  @media (max-width: 520px) { .charts { grid-template-columns: 1fr; } .row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <svg class="logo" viewBox="0 0 190 40" role="img" aria-label="Not Yunex"><g transform="rotate(-6 24 20)"><rect x="2" y="5" width="46" height="30" rx="4" fill="#00e38c"/><text x="25" y="28" text-anchor="middle" font-family="'Segoe UI Black','Arial Black',Arial,sans-serif" font-size="19" font-weight="900" fill="#191a1e">NOT</text></g><text x="56" y="30" font-family="'Segoe UI Black','Arial Black',Arial,sans-serif" font-size="27" font-weight="900" fill="#fff">YUNEX</text></svg>
+  <div><h1>Processor status</h1><div class="sub">Live throughput, ingest lag and queues (reads <span class="mono">/api/status</span> every second)</div></div>
+  <div class="chips"><span class="chip" id="chipPipeline">pipeline ?</span><span class="chip" id="chipBroker">broker ?</span></div>
+</header>
+<div id="banner">The processor cannot be reached, showing the last values.</div>
+<main>
+  <section class="cards">
+    <div class="card" id="cardRate"><div class="label">Throughput (5 s avg)</div><div class="value"><span id="vRate">-</span><span class="unit">msg/s</span></div></div>
+    <div class="card" id="cardLatency"><div class="label">Latency (avg, last 10 s)</div><div class="value"><span id="vLatency">-</span></div><div class="label" style="text-transform:none">max, last 10 s: <span id="vLatencyMax">-</span></div></div>
+    <div class="card" id="cardLag" title="Age of the newest processed event: it saw-tooths between the generator bursts by design"><div class="label">Newest event age</div><div class="value"><span id="vLag">-</span><span class="unit">s</span></div></div>
+    <div class="card" id="cardTracked"><div class="label">Tracked vehicles</div><div class="value"><span id="vTracked">-</span></div></div>
+    <div class="card" id="cardBuffer"><div class="label">Ingest buffer</div><div class="value"><span id="vBuffer">-</span><span class="unit" id="vBufferCap"></span></div></div>
+    <div class="card" id="cardAccepted"><div class="label">Accepted</div><div class="value"><span id="vAccepted">-</span></div></div>
+    <div class="card" id="cardRejected"><div class="label">Rejected</div><div class="value"><span id="vRejected">-</span></div></div>
+  </section>
+
+  <section class="charts">
+    <div class="card chart"><h2>Throughput (messages per second, 5 s average)</h2><p class="note">Accepted measurements per second, from the change of the counter over the last five seconds (the generator sends one burst per second, so single readings would jump between 0 and 2,000). The generator sends 1,000 per second in steady state.</p><svg id="cRate" viewBox="0 0 600 150" preserveAspectRatio="none"></svg></div>
+    <div class="card chart"><h2>Latency per message (seconds)</h2><p class="note">Time from the event time of a message (the camera) to its processing: average (dark) and maximum (light) over the last 10 seconds. Flat when the processor keeps up; it rises when it falls behind. The scale follows the data; the red line (the warning threshold) appears when the values get near it.</p><svg id="cLatency" viewBox="0 0 600 150" preserveAspectRatio="none"></svg></div>
+    <div class="card chart"><h2>Age of the newest event (seconds)</h2><p class="note">Wall-clock time minus the event time of the newest processed measurement (the former "ingest lag"). It saw-tooths from 0 to the tick interval between the generator bursts by design, and grows without bound when nothing arrives (the boards are frozen); the client uses it for "live". Read the latency chart for the real delay.</p><svg id="cLag" viewBox="0 0 600 150" preserveAspectRatio="none"></svg></div>
+    <div class="card chart"><h2>Ingest buffer (items)</h2><p class="note">Items waiting in the processor's own ingest queues (one per partition, bounded), between the MQTT receive and the workers. It is not the broker's queue: when it is full the processor stops acknowledging and the broker holds the messages. It usually stays near zero: the MQTT receive path (decode, submit, acknowledge one message at a time) is slower than the workers, so a lag that grows while this buffer is empty means the backlog waits in the broker. The scale follows the data; the red line (total capacity) appears when the queue gets near it.</p><svg id="cBuffer" viewBox="0 0 600 150" preserveAspectRatio="none"></svg><div class="mono" id="partitions" style="margin-top:6px;color:var(--slate)"></div></div>
+    <div class="card chart"><h2>Tracked vehicles</h2><p class="note">Vehicles that are on the road (a vehicle track exists). About 900 in steady state at 100 new vehicles per second, ten seconds per passage.</p><svg id="cTracked" viewBox="0 0 600 150" preserveAspectRatio="none"></svg></div>
+  </section>
+
+  <section class="row">
+    <div class="card"><h2 style="margin:0 0 6px;font-size:14px;color:var(--blue)">Rejected measurements by reason</h2>
+      <table><thead><tr><th>Reason</th><th class="n">Count</th></tr></thead><tbody id="rejected"></tbody></table></div>
+    <div class="card"><h2 style="margin:0 0 6px;font-size:14px;color:var(--blue)">Settings in effect</h2>
+      <table><tbody id="settings"></tbody></table></div>
+  </section>
+  <footer>History: the last 5 minutes, kept in this browser tab only. Parody logo; not affiliated with any real traffic company.</footer>
+</main>
+<script>
+(function () {
+  "use strict";
+  var MAX_SAMPLES = 300;
+  var RATE_WINDOW_MS = 5000;
+  var samples = [];
+  var lagWarning = 5;
+  var capacityTotal = 0;
+  var lastStatus = null;
+
+  function $(id) { return document.getElementById(id); }
+  function fmt(n, digits) { return n == null ? "-" : Number(n).toLocaleString("en-US", { maximumFractionDigits: digits == null ? 0 : digits, minimumFractionDigits: digits == null ? 0 : digits }); }
+  function seconds(text) {
+    var m = /^(?:(\d+)\.)?(\d+):(\d+):(\d+(?:\.\d+)?)$/.exec(text || "");
+    return m ? (Number(m[1] || 0) * 86400 + Number(m[2]) * 3600 + Number(m[3]) * 60 + Number(m[4])) : null;
+  }
+  function dur(v) { return v < 1 ? fmt(v * 1000, 0) + " ms" : fmt(v, 2) + " s"; }
+  function setClass(card, level) { card.className = "card" + (level ? " " + level : ""); }
+  function chip(el, text, level) { el.textContent = text; el.className = "chip" + (level ? " " + level : ""); }
+
+  function niceMax(v) {
+    if (!(v > 0)) { return 1; }
+    var pow = Math.pow(10, Math.floor(Math.log10(v)));
+    var n = v / pow;
+    return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * pow;
+  }
+
+  // series: [{ values: [...], color: "#hex", area: true|false }], one polyline per series on a shared axis.
+  function draw(svgId, series, opts) {
+    opts = opts || {};
+    var svg = $(svgId), w = 600, h = 150, padL = 44, padR = 8, padT = 8, padB = 16;
+    var all = [];
+    series.forEach(function (s) { all = all.concat(s.values.slice(-MAX_SAMPLES).filter(function (v) { return v != null; })); });
+    var peak = Math.max.apply(null, all.concat([opts.fit ? 0 : (opts.threshold || 0), 0]));
+    var max = niceMax(Math.max(peak * 1.1, opts.minMax || 0));
+    var plotW = w - padL - padR, plotH = h - padT - padB;
+    var xr = function (i, n) { return padL + plotW - (n - 1 - i) * (plotW / (MAX_SAMPLES - 1)); };
+    var y = function (v) { return padT + plotH - (Math.min(v, max) / max) * plotH; };
+    var out = [];
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + (plotH / 4) * g;
+      out.push('<line class="grid" x1="' + padL + '" x2="' + (w - padR) + '" y1="' + gy + '" y2="' + gy + '"/>');
+      out.push('<text class="axis" x="' + (padL - 4) + '" y="' + (gy + 3) + '" text-anchor="end">' + fmt(max - (max / 4) * g, max < 10 ? 1 : 0) + '</text>');
+    }
+    out.push('<text class="axis" x="' + padL + '" y="' + (h - 3) + '">-5 min</text><text class="axis" x="' + (w - padR) + '" y="' + (h - 3) + '" text-anchor="end">now</text>');
+    if (opts.threshold != null && opts.threshold <= max) {
+      out.push('<line class="thr" x1="' + padL + '" x2="' + (w - padR) + '" y1="' + y(opts.threshold) + '" y2="' + y(opts.threshold) + '"/>');
+    }
+    series.forEach(function (s) {
+      var data = s.values.slice(-MAX_SAMPLES), pts = [];
+      data.forEach(function (v, i) { if (v != null) { pts.push(xr(i, data.length).toFixed(1) + "," + y(v).toFixed(1)); } });
+      if (pts.length > 1) {
+        var first = pts[0].split(",")[0], last = pts[pts.length - 1].split(",")[0], base = padT + plotH;
+        if (s.area !== false) {
+          out.push('<polygon class="area" fill="' + s.color + '" points="' + first + ',' + base + ' ' + pts.join(' ') + ' ' + last + ',' + base + '"/>');
+        }
+        out.push('<polyline class="line" stroke="' + s.color + '" points="' + pts.join(' ') + '"/>');
+      }
+    });
+    svg.innerHTML = out.join("");
+  }
+
+  function render() {
+    var s = lastStatus;
+    if (!s) { return; }
+    var latest = samples[samples.length - 1];
+    var rate = latest ? latest.rate : null;
+
+    $("vRate").textContent = fmt(rate, 0);
+    setClass($("cardRate"), rate == null ? "" : rate > 0 ? "good" : "warn");
+
+    var latAvg = s.ingest.latencyAvgSeconds, latMax = s.ingest.latencyMaxSeconds;
+    $("vLatency").textContent = latAvg == null ? "-" : dur(latAvg);
+    $("vLatencyMax").textContent = latMax == null ? "-" : dur(latMax);
+    setClass($("cardLatency"), latAvg == null ? "" : latAvg < 0.5 ? "good" : latAvg < lagWarning ? "warn" : "bad");
+
+    var lag = s.ingest.ingestLagSeconds;
+    $("vLag").textContent = lag == null ? "-" : fmt(lag, 1);
+    setClass($("cardLag"), lag == null ? "" : lag < 1 ? "good" : lag < lagWarning ? "warn" : "bad");
+
+    $("vTracked").textContent = fmt(s.ingest.trackedVehicles);
+    $("vBuffer").textContent = fmt(s.ingest.bufferDepth);
+    $("vBufferCap").textContent = "/ " + fmt(capacityTotal);
+    var fill = capacityTotal > 0 ? s.ingest.bufferDepth / capacityTotal : 0;
+    setClass($("cardBuffer"), fill < 0.1 ? "good" : fill < 0.5 ? "warn" : "bad");
+    $("vAccepted").textContent = fmt(s.counters.accepted);
+    $("vRejected").textContent = fmt(s.counters.rejectedTotal);
+    setClass($("cardRejected"), s.counters.rejectedTotal === 0 ? "good" : "warn");
+
+    chip($("chipPipeline"), s.ingest.isRunning ? "pipeline running" : "pipeline stopped", s.ingest.isRunning ? "ok" : "bad");
+    chip($("chipBroker"), "broker " + (s.broker.enabled ? (s.broker.connected ? "connected" : "disconnected") : "disabled"), s.broker.enabled ? (s.broker.connected ? "ok" : "bad") : "warn");
+    $("partitions").textContent = "per partition: " + s.ingest.partitionDepths.map(function (d, i) { return "p" + i + " " + fmt(d); }).join("  |  ");
+
+    var col = function (key) { return samples.map(function (p) { return p[key]; }); };
+    draw("cRate", [{ values: col("rate"), color: "#00b36e" }]);
+    draw("cLatency", [{ values: col("latMax"), color: "#9aa3ff", area: false }, { values: col("latAvg"), color: "#1e2ed9" }], { threshold: lagWarning, fit: true, minMax: 0.6 });
+    draw("cLag", [{ values: col("lag"), color: "#575a76" }], { threshold: lagWarning, fit: true, minMax: 1.2 });
+    draw("cBuffer", [{ values: col("buffer"), color: "#c79200" }], { threshold: capacityTotal, fit: true, minMax: 12 });
+    draw("cTracked", [{ values: col("tracked"), color: "#575a76" }]);
+
+    var tbody = $("rejected");
+    tbody.textContent = "";
+    Object.keys(s.counters.rejected).forEach(function (reason) {
+      var tr = document.createElement("tr"), a = document.createElement("td"), b = document.createElement("td");
+      a.textContent = reason; b.textContent = fmt(s.counters.rejected[reason]); b.className = "n";
+      if (s.counters.rejected[reason] > 0) { tr.className = "hot"; }
+      tr.appendChild(a); tr.appendChild(b); tbody.appendChild(tr);
+    });
+
+    var st = $("settings");
+    st.textContent = "";
+    Object.keys(s.settings).forEach(function (key) {
+      var tr = document.createElement("tr"), a = document.createElement("td"), b = document.createElement("td");
+      a.textContent = key; b.textContent = String(s.settings[key]); b.className = "mono";
+      tr.appendChild(a); tr.appendChild(b); st.appendChild(tr);
+    });
+  }
+
+  function onStatus(s) {
+    var now = performance.now();
+    // The generator sends one burst per second and the page reads once per second, so two readings often see zero or two bursts;
+    // the rate is therefore the change of the counter over the last RATE_WINDOW_MS (about five seconds), not between two readings.
+    var reference = samples.find(function (p) { return now - p.t <= RATE_WINDOW_MS + 500; });
+    var rate = null;
+    if (reference && s.counters.accepted >= reference.accepted && now - reference.t >= 1000) {
+      rate = (s.counters.accepted - reference.accepted) / ((now - reference.t) / 1000);
+    }
+    var warning = seconds(s.settings.ingestLagWarning);
+    if (warning != null) { lagWarning = warning; }
+    capacityTotal = s.settings.ingestChannelCapacity * s.settings.partitionCount;
+    samples.push({ t: now, accepted: s.counters.accepted, rate: rate, lag: s.ingest.ingestLagSeconds, latAvg: s.ingest.latencyAvgSeconds, latMax: s.ingest.latencyMaxSeconds, buffer: s.ingest.bufferDepth, tracked: s.ingest.trackedVehicles });
+    if (samples.length > MAX_SAMPLES) { samples.shift(); }
+    lastStatus = s;
+    $("banner").style.display = "none";
+    render();
+  }
+
+  function poll() {
+    fetch("/api/status", { cache: "no-store" })
+      .then(function (r) { if (!r.ok) { throw new Error("HTTP " + r.status); } return r.json(); })
+      .then(onStatus)
+      .catch(function () { $("banner").style.display = "block"; chip($("chipPipeline"), "unreachable", "bad"); })
+      .then(function () { setTimeout(poll, 1000); });
+  }
+  poll();
+})();
+</script>
+</body>
+</html>

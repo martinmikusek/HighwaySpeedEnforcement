@@ -1,0 +1,31 @@
+{
+  "generatedAtUtc": "2026-10-14T14:03:10.0000000Z",
+  "cameraBoards": [
+    {
+      "cameraId": 1,
+      "latestEventUtc": "2026-10-14T14:03:09.4000000Z",
+      "entries": [
+        { "rank": 1, "numberPlate": "4S7 1234", "speedKmh": 152.4, "measuredAtUtc": "2026-10-14T14:03:09.3980000Z" },
+        { "rank": 2, "numberPlate": "2AB 9876", "speedKmh": 149.8, "measuredAtUtc": "2026-10-14T14:03:09.4000000Z" }
+      ]
+    },
+    { "cameraId": 2, "latestEventUtc": "2026-10-14T14:03:09.4000000Z", "entries": [
+        { "rank": 1, "numberPlate": "1A1 0001", "speedKmh": 147.0, "measuredAtUtc": "2026-10-14T14:03:09.4000000Z" } ] },
+    { "cameraId": 3, "latestEventUtc": "2026-10-14T14:03:09.4000000Z", "entries": [] },
+    { "cameraId": 4, "latestEventUtc": "2026-10-14T14:03:09.4000000Z", "entries": [] },
+    { "cameraId": 5, "latestEventUtc": "2026-10-14T14:03:09.4000000Z", "entries": [] },
+    { "cameraId": 6, "latestEventUtc": "2026-10-14T14:03:09.4000000Z", "entries": [] },
+    { "cameraId": 7, "latestEventUtc": "2026-10-14T14:01:02.0000000Z", "entries": [
+        { "rank": 1, "numberPlate": "3B2 5555", "speedKmh": 138.6, "measuredAtUtc": "2026-10-14T14:01:02.0000000Z" } ] },
+    { "cameraId": 8, "latestEventUtc": "2026-10-14T14:03:09.4000000Z", "entries": [] },
+    { "cameraId": 9, "latestEventUtc": "2026-10-14T14:03:09.4000000Z", "entries": [] },
+    { "cameraId": 10, "latestEventUtc": null, "entries": [] }
+  ],
+  "globalBoard": {
+    "latestEventUtc": "2026-10-14T14:03:09.7000000Z",
+    "entries": [
+      { "rank": 1, "numberPlate": "4S7 1234", "averageSpeedKmh": 144.35, "measurementCount": 6, "measuredAtUtc": "2026-10-14T14:03:09.3980000Z" },
+      { "rank": 2, "numberPlate": "2AB 9876", "averageSpeedKmh": 143.9, "measurementCount": 10, "measuredAtUtc": "2026-10-14T14:03:08.5000000Z" }
+    ]
+  }
+}

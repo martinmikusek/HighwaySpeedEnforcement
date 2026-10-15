@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Screenshots - Highway Speed Enforcement</title>
+<style>
+  body { margin: 0; background: #f6f7fa; color: #111; font: 15px/1.45 "Segoe UI", system-ui, sans-serif; }
+  header { background: #191a1e; color: #fff; padding: 16px 28px; border-bottom: 3px solid #00e38c; }
+  header h1 { margin: 0; font-size: 20px; }
+  header p { margin: 4px 0 0; color: #b8bacb; font-size: 13px; }
+  main { max-width: 1180px; margin: 0 auto; padding: 24px 28px 40px; }
+  h2 { color: #1e2ed9; font-size: 17px; margin: 28px 0 10px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 18px; }
+  figure { margin: 0; background: #fff; border: 1px solid #dee2e6; border-radius: 12px; padding: 12px; box-shadow: 0 1px 4px rgba(0, 0, 0, .05); }
+  figure img { width: 100%; height: auto; display: block; border-radius: 6px; border: 1px solid #e9ecef; }
+  figcaption { margin-top: 8px; color: #575a76; font-size: 13px; }
+  figcaption b { color: #111; }
+  .wide { max-width: 760px; }
+  footer { color: #575a76; font-size: 12px; margin-top: 28px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Highway Speed Enforcement: screenshots</h1>
+  <p>A page for viewers that do not render the images of the README. Open it in any browser; the images are in this folder.</p>
+</header>
+<main>
+  <h2>The client (WPF)</h2>
+  <div class="grid">
+    <figure><img src="client/dashboard-live.png" alt="Live boards"><figcaption><b>Live.</b> The generator runs: both boards are live (green dots), global top 10 by cumulative average and the top 10 of the selected camera.</figcaption></figure>
+    <figure><img src="client/dashboard-not-live.png" alt="Not live boards"><figcaption><b>Not live.</b> The generator stopped: the boards freeze at their last event time, are dimmed and say how old the data is.</figcaption></figure>
+    <figure><img src="client/dashboard-stale.png" alt="Stale client"><figcaption><b>Stale.</b> The processor is unreachable: the last data stay, a red banner shows the time of the last success, polling continues.</figcaption></figure>
+    <figure><img src="client/dashboard-empty.png" alt="No data yet"><figcaption><b>No data yet.</b> The processor has just started (also the state after it recovers from a restart): empty boards, connected.</figcaption></figure>
+  </div>
+
+  <h2>The processor status page (<code>/ui</code>)</h2>
+  <figure class="wide"><img src="status-page.png" alt="Status page"><figcaption><b>Status page.</b> Throughput (5 s average), latency per message, the age of the newest event (it saw-tooths by design), the ingest buffer and the tracked vehicles, taken with a running generator.</figcaption></figure>
+
+  <footer>Parody logo; not affiliated with any real traffic company. The README of the repository describes how to run everything.</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="../HighwaySpeedEnforcement.Client.Application/HighwaySpeedEnforcement.Client.Application.csproj" />
+    <ProjectReference Include="../../Processor/HighwaySpeedEnforcement.Processor.Contracts/HighwaySpeedEnforcement.Processor.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

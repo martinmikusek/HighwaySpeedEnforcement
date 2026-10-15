@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources/AppIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../HighwaySpeedEnforcement.Client.Application/HighwaySpeedEnforcement.Client.Application.csproj" />
+    <ProjectReference Include="../HighwaySpeedEnforcement.Client.Infrastructure/HighwaySpeedEnforcement.Client.Infrastructure.csproj" />
+    <ProjectReference Include="../HighwaySpeedEnforcement.Client.ViewModels/HighwaySpeedEnforcement.Client.ViewModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+    <Resource Include="Resources/AppIcon.ico" />
+  </ItemGroup>
+
+</Project>

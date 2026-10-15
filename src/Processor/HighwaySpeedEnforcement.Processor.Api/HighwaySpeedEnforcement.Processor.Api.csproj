@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="../HighwaySpeedEnforcement.Processor.Application/HighwaySpeedEnforcement.Processor.Application.csproj" />
+    <ProjectReference Include="../HighwaySpeedEnforcement.Processor.Infrastructure/HighwaySpeedEnforcement.Processor.Infrastructure.csproj" />
+    <ProjectReference Include="../HighwaySpeedEnforcement.Processor.Contracts/HighwaySpeedEnforcement.Processor.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Status/StatusPage.html" />
+  </ItemGroup>
+
+</Project>

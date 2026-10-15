@@ -1,0 +1,26 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Client/">
+    <Project Path="src/Client/HighwaySpeedEnforcement.Client.Application/HighwaySpeedEnforcement.Client.Application.csproj" />
+    <Project Path="src/Client/HighwaySpeedEnforcement.Client.Infrastructure/HighwaySpeedEnforcement.Client.Infrastructure.csproj" />
+    <Project Path="src/Client/HighwaySpeedEnforcement.Client.ViewModels/HighwaySpeedEnforcement.Client.ViewModels.csproj" />
+    <Project Path="src/Client/HighwaySpeedEnforcement.Client.Wpf/HighwaySpeedEnforcement.Client.Wpf.csproj" />
+  </Folder>
+  <Folder Name="/src/Generator/">
+    <Project Path="src/Generator/HighwaySpeedEnforcement.Generator.Domain/HighwaySpeedEnforcement.Generator.Domain.csproj" />
+    <Project Path="src/Generator/HighwaySpeedEnforcement.Generator.Infrastructure/HighwaySpeedEnforcement.Generator.Infrastructure.csproj" />
+    <Project Path="src/Generator/HighwaySpeedEnforcement.Generator/HighwaySpeedEnforcement.Generator.csproj" />
+  </Folder>
+  <Folder Name="/src/Processor/">
+    <Project Path="src/Processor/HighwaySpeedEnforcement.Processor.Api/HighwaySpeedEnforcement.Processor.Api.csproj" />
+    <Project Path="src/Processor/HighwaySpeedEnforcement.Processor.Application/HighwaySpeedEnforcement.Processor.Application.csproj" />
+    <Project Path="src/Processor/HighwaySpeedEnforcement.Processor.Contracts/HighwaySpeedEnforcement.Processor.Contracts.csproj" />
+    <Project Path="src/Processor/HighwaySpeedEnforcement.Processor.Domain/HighwaySpeedEnforcement.Processor.Domain.csproj" />
+    <Project Path="src/Processor/HighwaySpeedEnforcement.Processor.Infrastructure/HighwaySpeedEnforcement.Processor.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/HighwaySpeedEnforcement.Component.Tests/HighwaySpeedEnforcement.Component.Tests.csproj" />
+    <Project Path="tests/HighwaySpeedEnforcement.E2E.Tests/HighwaySpeedEnforcement.E2E.Tests.csproj" />
+    <Project Path="tests/HighwaySpeedEnforcement.Unit.Tests/HighwaySpeedEnforcement.Unit.Tests.csproj" />
+  </Folder>
+</Solution>

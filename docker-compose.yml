@@ -1,0 +1,29 @@
+services:
+  broker:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./deploy/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - broker-data:/mosquitto/data
+
+  processor:
+    build:
+      context: .
+      dockerfile: src/Processor/HighwaySpeedEnforcement.Processor.Api/Dockerfile
+    depends_on:
+      - broker
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      # Inside the compose network the broker is reached by its service name (design section 6).
+      Mqtt__Host: broker
+      # Demo settings (README, "Changing settings"): the two windows are 10 s here (the code defaults are 2 s and 3 s) so that the boards
+      # change calmly between two client refreshes; edit or comment out, then run `docker compose up -d processor`.
+      Processor__CameraBoardWindow: "00:00:10"       # how long a camera entry stays on its board (code default 00:00:02, or Infinite)
+      Processor__GlobalBoardLinger: "00:00:10"       # how long a completed vehicle stays on the global board (code default 00:00:03)
+      # Processor__InactivityTimeout: "00:00:10"     # silence after which an in-flight vehicle is dropped (default 00:00:05)
+
+volumes:
+  broker-data:

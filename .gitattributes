@@ -1,0 +1,10 @@
+# Normalize line endings: LF in the repository and in working copies, regardless of core.autocrlf.
+* text=auto eol=lf
+
+*.sh text eol=lf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+*.pdf binary
+*.png binary
+*.jpg binary

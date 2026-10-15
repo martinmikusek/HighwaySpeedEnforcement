@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="../HighwaySpeedEnforcement.Processor.Domain/HighwaySpeedEnforcement.Processor.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Only for the worker test hooks of IngestPipeline (controlled interleavings, backpressure). -->
+    <InternalsVisibleTo Include="HighwaySpeedEnforcement.Unit.Tests" />
+  </ItemGroup>
+
+</Project>

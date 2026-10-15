@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <!-- The load test (Category=Load) runs only on request; the command with the explicit filter is in CLAUDE.md. -->
+    <TestingPlatformCommandLineArguments>--filter-not-trait "Category=Load"</TestingPlatformCommandLineArguments>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <!-- The broker runs with the solution's tuned configuration (ADR-0001, spikes/mqtt/FINDINGS.md). -->
+  <ItemGroup>
+    <Content Include="../../deploy/mosquitto/mosquitto.conf" Link="deploy/mosquitto.conf" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Processor/HighwaySpeedEnforcement.Processor.Contracts/HighwaySpeedEnforcement.Processor.Contracts.csproj" />
+    <ProjectReference Include="../../src/Processor/HighwaySpeedEnforcement.Processor.Infrastructure/HighwaySpeedEnforcement.Processor.Infrastructure.csproj" />
+    <ProjectReference Include="../../src/Generator/HighwaySpeedEnforcement.Generator.Domain/HighwaySpeedEnforcement.Generator.Domain.csproj" />
+    <ProjectReference Include="../../src/Generator/HighwaySpeedEnforcement.Generator.Infrastructure/HighwaySpeedEnforcement.Generator.Infrastructure.csproj" />
+    <ProjectReference Include="../../src/Client/HighwaySpeedEnforcement.Client.Infrastructure/HighwaySpeedEnforcement.Client.Infrastructure.csproj" />
+    <!-- Built before the tests so that the whole-generator E2E tests can start the real process from its output. -->
+    <ProjectReference Include="../../src/Generator/HighwaySpeedEnforcement.Generator/HighwaySpeedEnforcement.Generator.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="MQTTnet" />
+    <PackageReference Include="Testcontainers" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="xunit.v3" />
+  </ItemGroup>
+
+</Project>

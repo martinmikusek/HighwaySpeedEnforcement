@@ -1,0 +1,26 @@
+<!-- Mint / slate palette of the dashboard. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <SolidColorBrush x:Key="MintBrush" Color="#00E38C" />
+  <SolidColorBrush x:Key="DarkMintBrush" Color="#005B38" />
+  <SolidColorBrush x:Key="LightMintBrush" Color="#CCF9E8" />
+  <SolidColorBrush x:Key="MidMintBrush" Color="#99F4D1" />
+  <SolidColorBrush x:Key="BlueBrush" Color="#1E2ED9" />
+  <SolidColorBrush x:Key="SlateBrush" Color="#575A76" />
+  <SolidColorBrush x:Key="DarkSlateBrush" Color="#46485E" />
+  <SolidColorBrush x:Key="HeaderBrush" Color="#191A1E" />
+  <SolidColorBrush x:Key="TextBrush" Color="#111111" />
+  <SolidColorBrush x:Key="PageBrush" Color="#F6F7FA" />
+  <SolidColorBrush x:Key="PanelHeaderBrush" Color="#E9F0F8" />
+  <SolidColorBrush x:Key="SelectionBrush" Color="#D6E3F2" />
+  <SolidColorBrush x:Key="LineBrush" Color="#DEE2E6" />
+  <SolidColorBrush x:Key="SeparatorBrush" Color="#E9ECEF" />
+  <SolidColorBrush x:Key="AlertBrush" Color="#EA0029" />
+  <SolidColorBrush x:Key="WarningBrush" Color="#FFC107" />
+  <SolidColorBrush x:Key="GreyBrush" Color="#ADB5BD" />
+  <SolidColorBrush x:Key="HeaderTextBrush" Color="#F6F7FA" />
+  <SolidColorBrush x:Key="HeaderMutedBrush" Color="#B9BCCF" />
+  <SolidColorBrush x:Key="WhiteBrush" Color="#FFFFFF" />
+
+</ResourceDictionary>

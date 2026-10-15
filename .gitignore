@@ -1,0 +1,31 @@
+# Build output
+bin/
+obj/
+publish/
+artifacts/
+
+# IDE / user files
+.vs/
+.idea/
+*.user
+*.suo
+*.DotSettings.user
+
+# Test and coverage output
+TestResults/
+coverage/
+*.trx
+
+# Logs and local secrets
+*.log
+appsettings.*.local.json
+.env
+
+# Claude Code local settings and scratch
+.claude/settings.local.json
+
+# IDE-generated launch profiles (random local ports); the hosts are configured through appsettings and compose
+**/Properties/launchSettings.json
+
+# Local Claude Code worktrees (scratch copies, never committed)
+.claude/worktrees/
